@@ -46,7 +46,7 @@ if (!function_exists('gofasnfeio_config')) {
 
         $actual_link = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . "://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
         if (stripos($actual_link, '/configaddonmods.php')) {
-            $whmcs_url__ = str_replace('\\', '/', (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . substr(getcwd(), strlen($_SERVER['DOCUMENT_ROOT'])));
+            $whmcs_url__ = str_replace('\\', '/', (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . '/' . substr(getcwd(), strlen($_SERVER['DOCUMENT_ROOT'])));
             $admin_url = $whmcs_url__ . '/';
             $vtokens = explode('/', $actual_link);
             $whmcs_admin_path = '/' . $vtokens[sizeof($vtokens) - 2] . '/';
