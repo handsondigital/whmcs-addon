@@ -15,7 +15,7 @@ $params = gnfe_config();
         $data = getTodaysDate(false);
         $dataAtual = toMySQLDate($data);
 
-        if ($params['issue_note'] !== 'Manualmente') {
+        if ('Manualmente' !== $params['issue_note']) {
             $getQuery = Capsule::table('tblinvoices')->whereBetween('date', [$params['initial_date'], $dataAtual])->where('id', '=', $waiting->invoice_id)->get(['id', 'userid', 'total']);
         } else {
             $getQuery = Capsule::table('tblinvoices')->where('id', '=', $waiting->invoice_id)->get(['id', 'userid', 'total']);
@@ -56,13 +56,9 @@ $params = gnfe_config();
                 $rps_number = 0;
             }
 
-            if ($customer['doc_type'] == 2) {
-                if ($client['companyname'] != '') {
-                    $name = $client['companyname'];
-                } else {
-                    $name = $client['fullname'];
-                }
-            } elseif ($customer['doc_type'] == 1 || $customer == 'CPF e/ou CNPJ ausente.' || !$customer['doc_type']) {
+            if (2 == $customer['doc_type']) {
+                $name = $client['companyname'];
+            } elseif (1 == $customer['doc_type'] || 'CPF e/ou CNPJ ausente.' == $customer || !$customer['doc_type']) {
                 $name = $client['fullname'];
             }
             $name = htmlspecialchars_decode($name);
@@ -72,21 +68,21 @@ $params = gnfe_config();
             foreach (Capsule::table('tblconfiguration')->where('setting', '=', 'Domain')->get(['value']) as $gnfeWhmcsUrl) {
                 $gnfeWhmcsUrl = $gnfeWhmcsUrl->value;
             }
-            if ($params['InvoiceDetails'] == 'Número da fatura') {
-                $desc = 'Nota referente a fatura #' . $waiting->invoice_id . '  ' . $gnfeWhmcsUrl . 'viewinvoice.php?id=' . $waiting->invoice_id . '     ';
+            if ('Número da fatura' == $params['InvoiceDetails']) {
+                $desc = 'Nota referente a fatura #'.$waiting->invoice_id.'  '.$gnfeWhmcsUrl.'viewinvoice.php?id='.$waiting->invoice_id.'     ';
             } else {
                 $desc = substr(implode("\n", $line_items), 0, 600);
             }
             if (strpos($client['address1'], ',')) {
-                $array_adress = explode(',', $client['address1']);
+                $array_adress=explode(",", $client['address1']);
                 $street = $array_adress[0];
-                $number = $array_adress[1];
+                $number=$array_adress[1];
             } else {
                 $street = str_replace(',', '', preg_replace('/[0-9]+/i', '', $client['address1']));
-                $number = preg_replace('/[^0-9]/', '', $client['address1']);
+                $number=preg_replace('/[^0-9]/', '', $client['address1']);
             }
-
-            if (!strlen($customer['insc_municipal']) == 0) {
+            
+            if (0 == !strlen($customer['insc_municipal'])) {
                 $postfields = [
                     'cityServiceCode' => $service_code,
                     'description' => $desc,
